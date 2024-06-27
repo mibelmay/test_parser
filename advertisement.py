@@ -17,3 +17,6 @@ class Advertisement:
         self.house = house
         self.floor = floor
         self.square = square
+
+    def __str__(self):
+        return f'Cost: {self.cost}, Rooms: {self.rooms_count}, Square: {self.square}, Url: {self.url}'

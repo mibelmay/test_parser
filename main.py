@@ -39,7 +39,6 @@ def get_yandex_realty():
     driver.quit()
 
     print(f"Количество объявлений : {ad_count}")
-    print(data)
 
 
 def get_ad(offer, url):
@@ -57,7 +56,7 @@ def get_ad(offer, url):
     address = offer.find_element(By.CSS_SELECTOR, '.AddressWithGeoLinks__addressContainer--4jzfZ').text
     street = address.split(', ')[0]
     house = address.split(', ')[1]
-    return Advertisement(
+    ad = Advertisement(
         link,
         cost,
         rooms_count,
@@ -68,6 +67,8 @@ def get_ad(offer, url):
         floor,
         square
     )
+    print(ad)
+    return ad
 
 
 def get_chrome_driver(user_agent=None):
@@ -75,10 +76,27 @@ def get_chrome_driver(user_agent=None):
 
     if user_agent:
         chrome_options.add_argument(f'--user-agent={user_agent}')
-
     driver = webdriver.Chrome(options=chrome_options)
+    driver.request_interceptor = interceptor
 
     return driver
+
+
+def interceptor(request):
+    # add the missing headers
+    request.headers[
+        "Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+    request.headers["Accept-Language"] = "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7"
+    request.headers["Connection"] = "keep-alive"
+    request.headers["Host"] = "https://realty.ya.ru"
+    request.headers["Sec-Fetch-Dest"] = "document"
+    request.headers["Sec-Fetch-Mode"] = "navigate"
+    request.headers["Sec-Fetch-Site"] = "none"
+    request.headers["Sec-Fetch-User"] = "?1"
+    request.headers["Upgrade-Insecure-Requests"] = "1"
+    request.headers["Cache-control"] = "max-age=0"
+    request.headers[
+        "User-Agent"] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'"
 
 
 def get_deal_type(url):
