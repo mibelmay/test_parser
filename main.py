@@ -1,6 +1,7 @@
 import json
 import re
 
+from geopy import Nominatim
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -76,6 +77,7 @@ def get_chrome_driver(user_agent=None):
 
     if user_agent:
         chrome_options.add_argument(f'--user-agent={user_agent}')
+    chrome_options.add_argument("--headless")
     driver = webdriver.Chrome(options=chrome_options)
     driver.request_interceptor = interceptor
 
@@ -138,11 +140,13 @@ def get_floor(title):
     return int(floor_match.group(1)) if floor_match else None
 
 
-if __name__ == '__main__':
-    get_yandex_realty()
 
-# def get_location(address):
-#     geolocator = Nominatim(user_agent="Tester")
-#     location = geolocator.geocode(address)
-#     print(location)
-#     print(location.latitude, location.longitude)
+
+def get_location(address):
+    geolocator = Nominatim(user_agent="Tester")
+    location = geolocator.geocode(address)
+    print(location)
+    print(location.latitude, location.longitude)
+
+if __name__ == '__main__':
+    get_location('Челябинская область, проспект Ленина 5')
